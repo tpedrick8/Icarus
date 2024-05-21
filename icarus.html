@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to Table</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        #fileInput {
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        #loadingSpinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #errorMessage {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        #sheetSelect {
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        table.dataTable {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        table.dataTable th, table.dataTable td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        table.dataTable thead {
+            background-color: #000D4D;
+            color: white;
+        }
+
+        table.dataTable tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: #a2bc3a;
+        }
+
+        .modal-content {
+            border-radius: 8px;
+        }
+
+        .modal-header {
+            background-color: #000D4D;
+            color: white;
+        }
+
+        .modal-body p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .modal-footer {
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .modal-column {
+            width: 50%;
+            float: left;
+            box-sizing: border-box;
+            padding: 10px;
+            overflow: auto;
+        }
+
+        .modal-column p {
+            margin: 0;
+            padding-bottom: 5px;
+            overflow-wrap: break-word;
+            font-size: 16px;
+        }
+
+        .modal-dialog {
+            max-width: 75%;
+        }
+
+        .modal-content {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="fileInput" class="form-control-file" accept=".xlsx, .xls" />
+    <div id="loadingSpinner"></div>
+    <p id="errorMessage">Error processing the file. Please make sure it's a valid Excel file.</p>
+    <select id="sheetSelect" class="form-control" style="display: none;"></select>
+    <table id="dataTable" class="display">
+        <thead>
+            <tr></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dataModalLabel">Row Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Row data will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
